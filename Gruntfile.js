@@ -73,10 +73,6 @@ module.exports = function(grunt) {
                 }
             }
         }
-        // ,
-        // coveralls: {
-        //     src: 'coverage/lcov.info'
-        // }
     });
 
     // Load plugins
@@ -88,7 +84,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-blanket');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
-    // grunt.loadNpmTasks('grunt-coveralls');
 
     grunt.event.on('coverage', function(lcov, done) {
         require('coveralls').handleInput(lcov, function(err) {

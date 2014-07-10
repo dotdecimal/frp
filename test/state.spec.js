@@ -74,7 +74,6 @@ describe('frp#state', function() {
         state_a.set(1);
 
         state_b.onResolve(function(value) {
-            expect(value).to.eql(1);
             state_a._unresolve();
         });
 
@@ -97,7 +96,6 @@ describe('frp#state', function() {
         state_a.set(1);
 
         state_b.onResolve(function(value) {
-            expect(value).to.eql(1);
             state_a._throw(new Error('An error was encountered'));
         });
 

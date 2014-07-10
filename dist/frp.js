@@ -1,53 +1,11 @@
 /*jshint bitwise: false*/
 "use strict";
 
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Utilities
+// External libraries
 
-function getTransformedList(list, predicate) {
-    var arr = [];
-    for (var i = 0; i < list.length; ++i) {
-        arr.push(predicate(list[i]));
-    }
-    return arr;
-}
-
-function every(list, predicate) {
-    if (!Array.isArray(list)) return false;
-
-    var transformed;
-    if (typeof predicate === 'function') {
-        transformed = getTransformedList(list, predicate);
-    } else {
-        transformed = list;
-    }
-
-    for (var i = 0; i < transformed; ++i) {
-        if (!transformed[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function clone(value) {
-    var obj;
-    if (Array.isArray(value)) {
-        obj = [];
-        for (var i = 0; i < value.length; ++i) {
-            obj.push(value[i]);
-        }
-    } else if (typeof value === 'object') {
-        obj = {};
-        for (var key in value) {
-            obj[key] = value[key];
-        }
-    } else {
-        obj = value;
-    }
-    return obj;
-}
+var _ = require('lodash'),
+    Promise = require('bluebird').Promise;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Schedule
@@ -86,7 +44,6 @@ if (typeof process === "object" && typeof process.version === "string") {
         setTimeout(fn, 0);
     };
 } else throw new Error("no async scheduler available");
-//module.exports = schedule;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Queue
@@ -448,7 +405,7 @@ Accessor.prototype._unresolve = function() {
 // Public methods
 
 Accessor.prototype.get = function() {
-    return this._resolved ? clone(this._value) : void 0;
+    return this._resolved ? _.clone(this._value) : void 0;
 };
 
 Accessor.prototype.isGettable = function() {
@@ -672,7 +629,7 @@ PropertyAccessor.prototype.set = function(value) {
 function makeArrayResolver(self, index) {
     return function() {
         self._itemsResolved[index] = true;
-        if (!every(self._itemsResolved)) {
+        if (!_.every(self._itemsResolved)) {
             return;
         }
         var result = [];
@@ -737,10 +694,10 @@ ArrayAccessor.prototype = Object.create(Accessor.prototype);
 function makeObjectResolver(self, key) {
     return function(value) {
         self._object[key] = value;
-        if (!every(self._object, Unresolved.not)) {
+        if (!_.every(self._object, Unresolved.not)) {
             return;
         }
-        self._resolve(clone(self._object));
+        self._resolve(_.clone(self._object));
     };
 }
 
@@ -785,7 +742,7 @@ ObjectAccessor.prototype = Object.create(Accessor.prototype);
 function makeJoinResolver(self, index) {
     return function() {
         self._accessorsResolved[index] = true;
-        if (!every(self._accessorsResolved)) {
+        if (!_.every(self._accessorsResolved)) {
             return;
         }
         var args = [];
