@@ -1,0 +1,31 @@
+{
+    "name": "frp",
+    "description": "A functional reactive programming library based heavily on Promises.",
+    "version": "0.0.1",
+    "author": {
+        "name": "Sal Gerace",
+        "email": "sgerace@gmail.com"
+    },
+    "keywords": [
+        "frp",
+		"reactive"
+    ],
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "directories": {
+        "lib": "./lib"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "chai": "1.9.1",
+        "grunt": "~0.4.5",
+        "grunt-contrib-jshint": "~0.10.0",
+        "grunt-mocha-test": "0.11.0",
+		"mocha": ">=1.20.1"
+    },
+    "scripts": {
+        "test": "mocha"
+    }
+}
