@@ -101,7 +101,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-coveralls');
 
     // Default task(s).
-    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls', 'coveralls'])
+    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls', 'coveralls', 'coveralls:target']);
     grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover']);
     grunt.registerTask('default', ['concat', 'uglify', 'test']);
 };
