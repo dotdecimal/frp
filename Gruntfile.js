@@ -72,10 +72,11 @@ module.exports = function(grunt) {
                     reportFormats: ['lcovonly']
                 }
             }
-        },
-        coveralls: {
-            src: 'coverage/lcov.info'
         }
+        // ,
+        // coveralls: {
+        //     src: 'coverage/lcov.info'
+        // }
     });
 
     // Load plugins
@@ -87,10 +88,19 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-blanket');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
-    grunt.loadNpmTasks('grunt-coveralls');
+    // grunt.loadNpmTasks('grunt-coveralls');
+
+    grunt.event.on('coverage', function(lcov, done) {
+        require('coveralls').handleInput(lcov, function(err) {
+            if (err) {
+                return done(err);
+            }
+            done();
+        });
+    });
 
     // Default task(s).
     grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls']);
-    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover', 'coveralls']);
+    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover']);
     grunt.registerTask('default', ['concat', 'uglify', 'test']);
 };
