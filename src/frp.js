@@ -405,7 +405,11 @@ Accessor.prototype._throw = function(error, handler) {
         if (this._errors === void 0) {
             this._errors = [];
         }
-        this._errors.push(error);
+        if (Array.isArray(error)) {
+            this._errors = this._errors.concat(error);
+        } else {
+            this._errors.push(error);
+        }
         this._broadcastGroup = (unresolving) ? 38 : 36;
         this._broadcastHandlers = void 0;
     } else if (unresolving) {
