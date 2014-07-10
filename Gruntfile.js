@@ -74,18 +74,7 @@ module.exports = function(grunt) {
             }
         },
         coveralls: {
-            options: {
-                // LCOV coverage file relevant to every target
-                src: 'coverage/lcov.info',
-
-                // When true, grunt-coveralls will only print a warning rather than
-                // an error, to prevent CI builds from failing unnecessarily (e.g. if
-                // coveralls.io is down). Optional, defaults to false.
-                force: false
-            },
-            target: {
-                src: 'coverage/lcov.info'
-            }
+            src: 'coverage/lcov.info'
         }
     });
 
@@ -101,7 +90,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-coveralls');
 
     // Default task(s).
-    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls', 'coveralls', 'coveralls:target']);
-    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover']);
+    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls']);
+    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover', 'coveralls']);
     grunt.registerTask('default', ['concat', 'uglify', 'test']);
 };
