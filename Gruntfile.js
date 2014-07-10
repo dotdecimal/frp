@@ -55,20 +55,33 @@ module.exports = function(grunt) {
                     reporter: 'spec',
                 },
                 src: ['coverage/test/**/*.js']
-            },
+            }
+        },
+        mocha_istanbul: {
             coverage: {
+                src: 'test', // the folder, not the files,
                 options: {
-                    reporter: 'html-cov',
-                    quiet: true,
-                    captureFile: 'coverage.html'
-                },
-                src: ['/coverage/test/**/*.js']
+                    mask: '*.spec.js'
+                }
             },
-            'travis-cov': {
+            coveralls: {
+                src: 'test', // the folder, not the files
                 options: {
-                    reporter: 'travis-cov'
-                },
-                src: ['/coverage/test/**/*.js']
+                    coverage: true,
+                    root: './src', // define where the cover task should consider the root of libraries that are covered by tests
+                    reportFormats: ['lcovonly']
+                }
+            }
+        },
+        coveralls: {
+            options: {
+                // LCOV coverage file relevant to every target
+                src: 'coverage/lcov.info',
+
+                // When true, grunt-coveralls will only print a warning rather than
+                // an error, to prevent CI builds from failing unnecessarily (e.g. if
+                // coveralls.io is down). Optional, defaults to false.
+                force: false
             }
         }
     });
@@ -81,8 +94,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-blanket');
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
+    grunt.loadNpmTasks('grunt-coveralls');
 
     // Default task(s).
-    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest']);
+    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls', 'coveralls'])
+    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover']);
     grunt.registerTask('default', ['concat', 'uglify', 'test']);
 };
