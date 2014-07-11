@@ -44,7 +44,7 @@ describe('frp#all', function() {
         });
     });
 
-    it('should not resolve if at least one of its values is not resolved', function(done) {
+    it('should not resolve if at least one of its values is not resolved', function() {
         var state_a = frp.state(1);
         var state_b = frp.state();
         var state_arr = frp.state([state_a, state_b]);
@@ -57,12 +57,7 @@ describe('frp#all', function() {
 
         arrAccessor.onResolve(function(values) {
             expect(false).to.be.true;
-            done();
         });
-
-        setTimeout(function() {
-            done();
-        }, 15);
     });
 
     it('should unresolve state', function(done) {
@@ -70,11 +65,16 @@ describe('frp#all', function() {
         var state_b = frp.state(2);
         var state_arr = frp.state([state_a, state_b]);
 
+        var timeout = setTimeout(function () {
+            expect(false).to.be.true;
+        }, 25);
+
         frp.all(state_arr).onResolve(function(values) {
             state_arr._unresolve();
         });
 
         frp.all(state_arr).onUnresolve(function() {
+            clearTimeout(timeout);
             done();
         });
     });
@@ -84,40 +84,55 @@ describe('frp#all', function() {
         var state_b = frp.state(2);
         var state_arr = frp.state([state_a, state_b]);
 
+        var timeout = setTimeout(function () {
+            expect(false).to.be.true;
+        }, 1000);
+
         frp.all(state_arr).onResolve(function(values) {
             state_b._unresolve();
         });
 
         frp.all(state_arr).onUnresolve(function() {
+            clearTimeout(timeout);
             done();
         });
     });
 
-    it('should trigger error', function(done) {
+    it('should error trigger', function(done) {
         var state_a = frp.state(1);
         var state_b = frp.state(2);
         var state_arr = frp.state([state_a, state_b]);
+
+        var timeout = setTimeout(function () {
+            expect(false).to.be.true;
+        }, 1000);
 
         frp.all(state_arr).onResolve(function(values) {
             state_arr._throw(new Error('An error was encountered'));
         });
 
         frp.all(state_arr).onError(function(errs) {
+            clearTimeout(timeout);
             expect(errs[0]).be.an.instanceof(Error);
             done();
         });
     });
 
-    it('should propagate trigger error', function(done) {
+    it('should propagate error trigger', function(done) {
         var state_a = frp.state(1);
         var state_b = frp.state(2);
         var state_arr = frp.state([state_a, state_b]);
+
+        var timeout = setTimeout(function () {
+            expect(false).to.be.true;
+        }, 1000);
 
         frp.all(state_arr).onResolve(function(values) {
             state_a._throw(new Error('An error was encountered'));
         });
 
         frp.all(state_arr).onError(function(errs) {
+            clearTimeout(timeout);
             expect(errs[0]).be.an.instanceof(Error);
             done();
         });

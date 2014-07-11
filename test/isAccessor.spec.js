@@ -1,0 +1,40 @@
+var expect = require('chai').expect;
+var frp = require('../src/frp');
+
+describe('frp#isAccessor', function () {
+    it('should return true if the value is an accessor', function () {
+        var number_state = frp.state(1);
+        var bool_state = frp.state(true);
+        var string_state = frp.state('frp rocks!');
+        var array_state = frp.state([1, 2, 3]);
+        var obj_state = frp.state({
+            one: 1,
+            two: 2,
+            three: 3
+        });
+
+        expect(frp.isAccessor(number_state)).to.be.true;
+        expect(frp.isAccessor(bool_state)).to.be.true;
+        expect(frp.isAccessor(string_state)).to.be.true;
+        expect(frp.isAccessor(array_state)).to.be.true;
+        expect(frp.isAccessor(obj_state)).to.be.true;
+    });
+
+    it('should return false if the value is not an accessor', function () {
+        var number = 1;
+        var bool = true;
+        var string = 'frp rocks!';
+        var arr = [1, 2, 3];
+        var obj = {
+            one: 1,
+            two: 2,
+            three: 3
+        };
+
+        expect(frp.isAccessor(number)).to.be.false;
+        expect(frp.isAccessor(bool)).to.be.false;
+        expect(frp.isAccessor(string)).to.be.false;
+        expect(frp.isAccessor(arr)).to.be.false;
+        expect(frp.isAccessor(obj)).to.be.false;
+    });
+});

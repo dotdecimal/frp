@@ -472,7 +472,7 @@ Accessor.prototype.isObject = function() {
 };
 
 Accessor.prototype.isResolved = function() {
-    var accessor = new ValueAccessor();
+    var accessor = (new ValueAccessor()).startWith(this._resolved);
     this.observe(function() {
         accessor.set(true);
     }, function() {
@@ -721,11 +721,14 @@ function ObjectAccessor(object) {
     var count = 0;
     var self = this;
     for (var p in object) {
-        if (!(object[p] instanceof Accessor)) {
-            self._object[p] = object[p];
-        } else {
-            count++;
-            object[p].observe(makeObjectResolver(self, p), makeObjectUnresolver(self, p), makeObjectErrorThrower(self));
+        if (object.hasOwnProperty(p)) {
+            this._object[p] = new Unresolved(); // TODO: Added by Kyle - Sal, please verify
+            if (!(object[p] instanceof Accessor)) {
+                self._object[p] = object[p];
+            } else {
+                count++;
+                object[p].observe(makeObjectResolver(self, p), makeObjectUnresolver(self, p), makeObjectErrorThrower(self));
+            }
         }
     }
     if (count === 0) {
@@ -968,7 +971,7 @@ frp.future = function(fcn) {
     for (var i = 1; i < arguments.length; ++i) {
         args.push(arguments[i]);
     }
-    return new FutureAccessor(fcn, args);
+    return new FutureAccessor(args, fcn);
 };
 
 frp.join = function() {
