@@ -1,5 +1,5 @@
 /*jshint bitwise: false*/
-/* JavaScript Object Network Server
+/* Functional Reactive Programming Library (frp)
  *
  * Copyright (c) 2014 .decimal, Inc.
  *
