@@ -140,8 +140,6 @@ Queue.prototype._resizeTo = function Queue$_resizeTo(capacity) {
     }
 };
 
-//module.exports = Queue;
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Utils
 
@@ -315,17 +313,6 @@ Accessor.prototype._broadcast = function() {
     this._broadcastPending = false;
     this._broadcastGroup = 0;
     this._broadcastHandlers = void 0;
-};
-
-Accessor.prototype._finalize = function() {
-    this._finalized = true;
-    if (!this._broadcastPending) {
-        this._resolveHandlers = void 0;
-        this._unresolveHandlers = void 0;
-        this._errorHandlers = void 0;
-        this._broadcastGroup = 0;
-        this._broadcastHandlers = void 0;
-    }
 };
 
 Accessor.prototype._resolve = function(value, handler) {
@@ -722,7 +709,7 @@ function ObjectAccessor(object) {
     var self = this;
     for (var p in object) {
         if (object.hasOwnProperty(p)) {
-            this._object[p] = new Unresolved(); // TODO: Added by Kyle - Sal, please verify
+            this._object[p] = new Unresolved();
             if (!(object[p] instanceof Accessor)) {
                 self._object[p] = object[p];
             } else {
