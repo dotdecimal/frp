@@ -22,7 +22,7 @@
  */
 
 var expect = require('chai').expect;
-var frp = require('../src/frp');
+var frp = require('../lib/frp');
 
 describe('frp#state', function() {
     it('should create state with initial values', function() {

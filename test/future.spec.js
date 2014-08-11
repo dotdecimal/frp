@@ -22,7 +22,7 @@
  */
 
 var expect = require('chai').expect;
-var frp = require('../src/frp');
+var frp = require('../lib/frp');
 
 describe('frp#future', function () {
     it('should create a future accessor based on the given function (non accessor)', function (done) {

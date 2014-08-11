@@ -22,7 +22,7 @@
  */
 
 var expect = require('chai').expect;
-var frp = require('../src/frp');
+var frp = require('../lib/frp');
 
 describe('frp#join', function() {
     it('should properly execute a join', function(done) {

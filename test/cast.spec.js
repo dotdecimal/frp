@@ -22,7 +22,7 @@
  */
 
 var expect = require('chai').expect;
-var frp = require('../src/frp');
+var frp = require('../lib/frp');
 
 describe('frp#cast', function() {
     it('should cast a given value to an accessor', function () {

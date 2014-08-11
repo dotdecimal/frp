@@ -1,6 +1,9 @@
 module.exports = function(grunt) {
     "use strict";
 
+    // Environment variables
+    process.env['mocha-json-spec-dest'] = './coverage/result.json';
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -10,16 +13,26 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: [
-                    'src/frp.js',
+                    'lib/frp.js',
                 ],
                 dest: 'dist/frp.js',
             },
         },
+        jsdoc: {
+            dist: {
+                src: [
+                    'README.md',
+                    'lib/**/*.js'
+                ],
+                options: {
+                    destination: 'docs',
+                    configure: 'jsdoc.conf'
+                }
+            }
+        },
         jshint: {
             files: {
-                src: ['src/*.js',
-                    'test/*.js'
-                ],
+                src: ['lib/*.js'],
                 globals: {}
             }
         },
@@ -32,44 +45,29 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
-        clean: {
-            coverage: {
-                src: ['coverage/']
-            }
-        },
-        copy: {
-            coverage: {
-                src: ['test/**'],
-                dest: 'coverage/'
-            }
-        },
-        blanket: {
-            coverage: {
-                src: ['src/'],
-                dest: 'coverage/src/'
-            }
-        },
-        mochaTest: {
-            test: {
-                options: {
-                    reporter: 'spec',
-                },
-                src: ['coverage/test/**/*.js']
-            }
-        },
         mocha_istanbul: {
-            coverage: {
-                src: 'test', // the folder, not the files,
+            test: {
+                src: './test',
                 options: {
-                    mask: '*.spec.js'
+                    mask: '**/*.spec.js',
+                    recursive: true,
+                    root: './lib',
+                    reporter: 'mocha-json-spec-reporter'
                 }
             },
-            coveralls: {
-                src: 'test', // the folder, not the files
+            enforce: {
+                src: './test',
                 options: {
-                    coverage: true,
-                    root: './src', // define where the cover task should consider the root of libraries that are covered by tests
-                    reportFormats: ['lcovonly']
+                    mask: '**/*.spec.js',
+                    recursive: true,
+                    check: {
+                        lines: 100,
+                        statements: 100,
+                        branches: 100,
+                        functions: 100
+                    },
+                    root: './lib',
+                    reporter: 'mocha-json-spec-reporter'
                 }
             }
         }
@@ -79,23 +77,20 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-blanket');
+    grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
 
-    grunt.event.on('coverage', function(lcov, done) {
-        require('coveralls').handleInput(lcov, function(err) {
-            if (err) {
-                return done(err);
-            }
-            done();
-        });
+    // --------------------------------------------------
+    // Testing tasks
+
+    grunt.registerTask('test', function(spec) {
+        var key = 'mocha_istanbul.test.options.grep';
+        if (typeof spec === 'string') {
+            grunt.config.set(key, spec);
+        }
+        grunt.task.run('mocha_istanbul:test');
     });
 
     // Default task(s).
-    grunt.registerTask('cover', ['mocha_istanbul:coverage', 'mocha_istanbul:coveralls']);
-    grunt.registerTask('test', ['clean', 'blanket', 'copy', 'mochaTest', 'cover']);
-    grunt.registerTask('default', ['concat', 'uglify', 'test']);
+    grunt.registerTask('default', ['concat', 'uglify', /*'jshint', 'jsdoc',*/ 'mocha_istanbul:enforce']);
 };

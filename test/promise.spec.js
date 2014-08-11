@@ -23,7 +23,7 @@
 
 var expect = require('chai').expect;
 var Promise = require('bluebird').Promise;
-var frp = require('../src/frp');
+var frp = require('../lib/frp');
 
 describe('frp#promise', function() {
     it('should return a promise accessor that is resolved with the promise', function(done) {
