@@ -35,6 +35,7 @@ var _ = require('lodash'),
 
 var schedule;
 var _MutationObserver;
+/* istanbul ignore else: hard to test; copied from bluebird */
 if (typeof process === "object" && typeof process.version === "string") {
     schedule = function Promise$_Scheduler(fn) {
         process.nextTick(fn);

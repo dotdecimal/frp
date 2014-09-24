@@ -1,4 +1,4 @@
-/* Functional Reactive Programming (frp) Tests
+/* istanbul ignore next: hard to test; *//* Functional Reactive Programming (frp) Tests
  *
  * Copyright (c) 2014 .decimal, Inc.
  *
@@ -192,6 +192,95 @@ describe('frp:Accessor', function() {
             }, 1000);
 
             state.isResolved().onResolve(function(value) {
+                state._throw(new Error('An error was encountered'));
+            }).onError(function(errs) {
+                clearTimeout(timeout);
+                expect(errs[0]).be.an.instanceof(Error);
+                done();
+            });
+        });
+    });
+
+    describe('Accessor#isUndefined', function() {
+        it('should have an initial state of true before the value is resolved', function(done) {
+            var state = frp.state();
+
+            var timeout = setTimeout(function() {
+                expect(false).to.be.true;
+            }, 1000);
+
+            state.isUndefined().onResolve(function(value) {
+                expect(value).to.be.true;
+                clearTimeout(timeout);
+                done();
+            });
+        });
+
+        it('should return true if the resolved value is undefined', function(done) {
+            var state = frp.state(void 0);
+
+            var timeout = setTimeout(function() {
+                expect(false).to.be.true;
+            }, 1000);
+
+            state.isUndefined().onResolve(function(value) {
+                expect(value).to.be.true;
+                clearTimeout(timeout);
+                done();
+            });
+        });
+
+        it('should return false if the resolved value is defined', function(done) {
+            var state = frp.state(1);
+
+            var timeout = setTimeout(function() {
+                expect(false).to.be.true;
+            }, 1000);
+
+            var triggered = false;
+            state.isUndefined().onResolve(function(value) {
+                if (value) {
+                    triggered = true;
+                } else {
+                    expect(triggered).to.be.true;
+                    clearTimeout(timeout);
+                    done();
+                }
+            });
+        });
+
+        it('should return true if the value becomes unresolved', function(done) {
+            var state = frp.state(1);
+
+            var timeout = setTimeout(function() {
+                expect(false).to.be.true;
+            }, 1000);
+
+            var flag = 0;
+            var triggered = false;
+            state.isUndefined().onResolve(function(value) {
+                if (flag === 2) {
+                    clearTimeout(timeout);
+                    expect(triggered).to.be.true;
+                    done();
+                } else {
+                    if (flag === 1) {
+                        triggered = true;
+                        state._unresolve();
+                    }
+                    flag++;
+                }
+            });
+        });
+
+        it('should propagate error trigger', function(done) {
+            var state = frp.state(1);
+
+            var timeout = setTimeout(function() {
+                expect(false).to.be.true;
+            }, 1000);
+
+            state.isUndefined().onResolve(function(value) {
                 state._throw(new Error('An error was encountered'));
             }).onError(function(errs) {
                 clearTimeout(timeout);
